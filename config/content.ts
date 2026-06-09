@@ -67,7 +67,7 @@ export const content = {
     /** Mensaje dulce que aparece tras decir "Sí". */
     successHeading: "Lo sabía. 4 horas no me alcanzan,",
     successMessage:
-      "pero las quiero todas: tu risa, tus historias, tus silencios y esa forma tuya de hacer que el mundo se porte bien. Prepárate, porque pienso convertir cada minuto en un buen recuerdo.",
+      "pero las quiero todas: tu risa, tus historias, tus silencios y esa forma tuya de hacer que el mundo se porte bien. Prepárate, porque pienso convertir cada minuto en un buen momento de nuestra historia.",
   },
 
   /** Música de fondo (toggle). Coloca tu archivo en /public/music/song.mp3 */
