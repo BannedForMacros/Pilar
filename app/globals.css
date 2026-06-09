@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #2a1228;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  @apply font-body text-rosa-soft;
+}
+
+/* Foco visible y accesible en todos los elementos interactivos */
+:focus-visible {
+  outline: 2px solid theme("colors.gold.DEFAULT");
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Utilidad: texto con degradado dorado-rosa */
+.text-gradient {
+  background: linear-gradient(
+    120deg,
+    theme("colors.gold.soft"),
+    theme("colors.rosa.DEFAULT"),
+    theme("colors.gold.DEFAULT")
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Tarjeta con flip 3D */
+.flip-card {
+  perspective: 1200px;
+}
+.flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.flip-card:hover .flip-inner,
+.flip-card:focus-within .flip-inner,
+.flip-card[data-flipped="true"] .flip-inner {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner {
+    transition: none;
+  }
+}
