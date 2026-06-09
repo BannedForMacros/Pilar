@@ -37,25 +37,25 @@ export const content = {
       icon: "Sparkles",
       title: "Tu rostro",
       text:
-        "Tu rostro es mi lugar favorito del mundo. Han pasado los años y te sigo mirando con el mismo asombro del primer día.",
+        "Tu rostro es mi lugar favorito del mundo. Pasan los años y te sigo mirando con el mismo asombro del primer día, como si cada vez te conociera de nuevo.",
     },
     {
       icon: "Smile",
       title: "Tu sonrisa",
       text:
-        "Tu sonrisa me desordena el día entero y lo vuelve mejor. Podría perseguirla toda la vida.",
+        "Tu sonrisa lo ilumina todo y me alegra el día sin que te des cuenta. Es eso tan bonito que querría ver cada mañana por el resto de mi vida.",
     },
     {
       icon: "Star",
       title: "Tus lunares",
       text:
-        "Amo cada uno de tus lunares, como si fueran un mapa hecho solo para que yo me pierda en ti.",
+        "Amo cada uno de tus lunares. Son pequeñas estrellas en tu piel, un mapa hecho a mano para que yo me pierda en ti y nunca quiera volver.",
     },
     {
       icon: "Heart",
-      title: "Tu tiempo",
+      title: "Nuestro tiempo",
       text:
-        "A tu lado el tiempo se porta raro: las horas vuelan y aun así no me alcanzan. Contigo todo es mejor.",
+        "Contigo el tiempo se vuelve mágico: las horas se pasan volando y aun así nunca me alcanzan. Siempre, siempre quiero un ratito más a tu lado.",
     },
   ] as Reason[],
 
