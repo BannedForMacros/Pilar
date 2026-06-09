@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { Heart } from "lucide-react";
 import { content } from "@/config/content";
 
@@ -9,6 +15,16 @@ export default function FinalQuestion() {
   const [accepted, setAccepted] = useState(false);
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
   const [dodges, setDodges] = useState(0);
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.9", "center 0.55"],
+  });
+  // La pregunta emerge (zoom + fade) siguiendo el scroll
+  const revealScale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  const revealOpacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   const { prompt, yesLabel, noLabel, successHeading, successMessage } =
     content.finalQuestion;
@@ -29,14 +45,17 @@ export default function FinalQuestion() {
   }, [dodges, noLabel]);
 
   return (
-    <section className="relative mx-auto flex min-h-[80svh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+    <section
+      ref={sectionRef}
+      className="relative mx-auto flex min-h-[80svh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center"
+    >
       <AnimatePresence mode="wait">
         {!accepted ? (
           <motion.div
             key="question"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+            style={
+              reduce ? undefined : { scale: revealScale, opacity: revealOpacity }
+            }
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
