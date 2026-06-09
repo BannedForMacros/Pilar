@@ -9,7 +9,7 @@ export default function MusicToggle() {
   const [playing, setPlaying] = useState(false);
   const [available, setAvailable] = useState(true);
 
-  // Si la pestaña se oculta, sincronizamos el estado del botón.
+  // Mantiene el ícono del botón sincronizado con el estado real del audio.
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
@@ -23,12 +23,64 @@ export default function MusicToggle() {
     };
   }, []);
 
+  /**
+   * Reproducción automática:
+   *  1) Intenta sonar al cargar (algunos navegadores de escritorio lo permiten).
+   *  2) Si el navegador lo bloquea (política de autoplay en móvil/iOS), arranca
+   *     en la PRIMERA interacción de la usuaria (toque/scroll/clic) en cualquier
+   *     parte de la página.
+   */
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.volume = 0.5;
+
+    let started = false;
+    const events = ["pointerdown", "touchstart", "keydown", "click", "scroll"];
+
+    const cleanup = () => {
+      events.forEach((e) => window.removeEventListener(e, onFirstGesture));
+    };
+
+    const tryPlay = () => {
+      if (started) return;
+      el
+        .play()
+        .then(() => {
+          started = true;
+          cleanup();
+        })
+        .catch(() => {
+          /* bloqueado: esperamos el primer gesto del usuario */
+        });
+    };
+
+    const onFirstGesture = (e: Event) => {
+      // Si tocó el propio botón de música, deja que el botón lo maneje.
+      const target = e.target as Element | null;
+      if (target?.closest?.("[data-music-button]")) {
+        cleanup();
+        return;
+      }
+      tryPlay();
+    };
+
+    // 1) intento inmediato
+    tryPlay();
+    // 2) escuchar el primer gesto
+    events.forEach((e) =>
+      window.addEventListener(e, onFirstGesture, { passive: true })
+    );
+
+    return cleanup;
+  }, []);
+
   const toggle = async () => {
     const el = audioRef.current;
     if (!el) return;
     try {
       if (el.paused) {
-        await el.play(); // debe llamarse dentro del gesto del usuario (móvil/iOS)
+        await el.play();
       } else {
         el.pause();
       }
@@ -52,6 +104,7 @@ export default function MusicToggle() {
 
       <button
         type="button"
+        data-music-button
         onClick={toggle}
         aria-label={playing ? content.music.pauseLabel : content.music.playLabel}
         aria-pressed={playing}
