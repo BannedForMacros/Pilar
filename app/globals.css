@@ -61,10 +61,16 @@ body {
   transform-style: preserve-3d;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.flip-card:hover .flip-inner,
-.flip-card:focus-within .flip-inner,
+/* En móvil/touch el flip es SOLO por toque (estado data-flipped). */
 .flip-card[data-flipped="true"] .flip-inner {
   transform: rotateY(180deg);
+}
+/* El hover solo aplica en dispositivos con puntero real (escritorio). */
+@media (hover: hover) and (pointer: fine) {
+  .flip-card:hover .flip-inner,
+  .flip-card:focus-within .flip-inner {
+    transform: rotateY(180deg);
+  }
 }
 .flip-face {
   backface-visibility: hidden;

@@ -70,14 +70,18 @@ export default function Hero() {
 
       <motion.div
         style={reduce ? undefined : { opacity }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.6 }}
         className="absolute bottom-10 flex flex-col items-center text-gold-soft/70"
         aria-hidden="true"
       >
-        <span className="mb-1 text-xs uppercase tracking-widest">Desliza</span>
-        <ChevronDown className="h-5 w-5 animate-float" />
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.6 }}
+          className="flex flex-col items-center"
+        >
+          <span className="mb-1 text-xs uppercase tracking-widest">Desliza</span>
+          <ChevronDown className="h-5 w-5 animate-float" />
+        </motion.div>
       </motion.div>
     </section>
   );

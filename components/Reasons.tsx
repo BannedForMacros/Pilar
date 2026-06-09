@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from "framer-motion";
 import { Sparkles, Smile, Star, Heart, type LucideIcon } from "lucide-react";
 import { content, type ReasonIcon } from "@/config/content";
 
@@ -13,21 +19,34 @@ const ICONS: Record<ReasonIcon, LucideIcon> = {
 };
 
 export default function Reasons() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
   return (
-    <section className="relative mx-auto max-w-5xl px-6 py-20">
+    <section ref={ref} className="relative mx-auto max-w-5xl px-6 py-24">
       <motion.h2
-        initial={{ opacity: 0, y: 14 }}
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.6 }}
         transition={{ duration: 0.7 }}
-        className="mb-12 text-center font-display text-3xl text-gradient sm:text-4xl"
+        className="mb-14 text-center font-display text-3xl text-gradient sm:text-4xl"
       >
         {content.reasonsHeading}
       </motion.h2>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {content.reasons.map((reason, i) => (
-          <ReasonCard key={i} index={i} icon={reason.icon} title={reason.title} text={reason.text} />
+          <ReasonCard
+            key={i}
+            index={i}
+            icon={reason.icon}
+            title={reason.title}
+            text={reason.text}
+            progress={scrollYProgress}
+          />
         ))}
       </div>
     </section>
@@ -39,21 +58,33 @@ function ReasonCard({
   icon,
   title,
   text,
+  progress,
 }: {
   index: number;
   icon: ReasonIcon;
   title: string;
   text: string;
+  progress: MotionValue<number>;
 }) {
   const Icon = ICONS[icon];
   const [flipped, setFlipped] = useState(false);
+  const reduce = useReducedMotion();
+
+  // Parallax sutil: las columnas se desplazan en sentidos opuestos al hacer scroll
+  const dir = index % 2 === 0 ? 1 : -1;
+  const parallaxY = useTransform(progress, [0, 1], [40 * dir, -40 * dir]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      style={reduce ? undefined : { y: parallaxY }}
+      initial={{ opacity: 0, y: 40, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.12,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="flip-card h-56"
       data-flipped={flipped}
     >
