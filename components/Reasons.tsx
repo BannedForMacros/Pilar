@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
+  useInView,
   useReducedMotion,
   type MotionValue,
 } from "framer-motion";
@@ -67,8 +68,21 @@ function ReasonCard({
   progress: MotionValue<number>;
 }) {
   const Icon = ICONS[icon];
-  const [flipped, setFlipped] = useState(false);
   const reduce = useReducedMotion();
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  // La tarjeta se considera "en foco" cuando está bien visible al hacer scroll
+  const inView = useInView(cardRef, { amount: 0.6 });
+
+  const [flipped, setFlipped] = useState(false);
+  const [touched, setTouched] = useState(false); // el toque manual tiene prioridad
+
+  // Auto-flip: al entrar en pantalla muestra el mensaje (para leerlo mientras
+  // se desliza); al salir, vuelve al frente. El toque manual lo anula.
+  useEffect(() => {
+    if (touched) return;
+    setFlipped(inView);
+  }, [inView, touched]);
 
   // Parallax sutil: las columnas se desplazan en sentidos opuestos al hacer scroll
   const dir = index % 2 === 0 ? 1 : -1;
@@ -76,6 +90,7 @@ function ReasonCard({
 
   return (
     <motion.div
+      ref={cardRef}
       style={reduce ? undefined : { y: parallaxY }}
       initial={{ opacity: 0, y: 40, scale: 0.96 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -90,9 +105,12 @@ function ReasonCard({
     >
       <button
         type="button"
-        onClick={() => setFlipped((f) => !f)}
+        onClick={() => {
+          setTouched(true);
+          setFlipped((f) => !f);
+        }}
         aria-pressed={flipped}
-        aria-label={`Razón: ${title}. Toca para ${flipped ? "ocultar" : "revelar"} el mensaje.`}
+        aria-label={`Razón: ${title}. ${flipped ? "Mostrando el mensaje." : "Toca para revelar el mensaje."}`}
         className="flip-inner relative h-full w-full rounded-2xl text-left"
       >
         {/* Frente */}
@@ -101,13 +119,11 @@ function ReasonCard({
             <Icon className="h-8 w-8 text-gold-soft" aria-hidden="true" />
           </span>
           <h3 className="font-display text-2xl text-rosa-soft">{title}</h3>
-          <span className="text-xs uppercase tracking-widest text-gold-soft/60">
-            Toca para leer
-          </span>
         </div>
 
         {/* Reverso */}
-        <div className="flip-face flip-back absolute inset-0 flex items-center justify-center rounded-2xl border border-gold/30 bg-gradient-to-br from-plum-soft/70 to-plum-deep/80 p-6 backdrop-blur-md">
+        <div className="flip-face flip-back absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl border border-gold/30 bg-gradient-to-br from-plum-soft/70 to-plum-deep/80 p-6 backdrop-blur-md">
+          <Icon className="h-6 w-6 shrink-0 text-gold-soft/70" aria-hidden="true" />
           <p className="text-center font-display text-lg leading-snug text-rosa-soft sm:text-xl">
             {text}
           </p>

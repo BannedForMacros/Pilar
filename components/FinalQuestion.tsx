@@ -98,15 +98,6 @@ export default function FinalQuestion() {
               </motion.button>
             </div>
 
-            {dodges > 1 && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-8 text-sm italic text-gold-soft/70"
-              >
-                (Ese botón no quiere que digas que no…)
-              </motion.p>
-            )}
           </motion.div>
         ) : (
           <Success key="success" heading={successHeading} message={successMessage} />

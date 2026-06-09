@@ -79,8 +79,15 @@ export default function Hero() {
           transition={{ duration: 1, delay: 1.6 }}
           className="flex flex-col items-center"
         >
-          <span className="mb-1 text-xs uppercase tracking-widest">Desliza</span>
-          <ChevronDown className="h-5 w-5 animate-float" />
+          <span className="mb-2 text-xs uppercase tracking-[0.25em]">
+            Desliza hacia abajo
+          </span>
+          <motion.span
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown className="h-6 w-6" />
+          </motion.span>
         </motion.div>
       </motion.div>
     </section>
